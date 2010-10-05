@@ -1,0 +1,183 @@
+#!/bin/bash -e
+#
+#   linfreeze - Freezes a user's home directory to prevent permanent file changes.
+#
+#   Copyright (C) 2010 Ryan Peters <sloshy45 [--at--] sbcglobal [--dot--] net>
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#   Additional permission under GNU GPL version 3 section 7
+#
+#   If you modify this Program, or any covered work, by linking or 
+#   combining it with [name of library] (or a modified version of that library), 
+#   containing parts covered by the terms of [name of library's license],
+#   the licensors of this Program grant you additional permission to convey
+#   the resulting work. {Corresponding Source for a non-source form of such
+#   a combination shall include the source code for the parts of [name of library]
+#   used as well as that of the covered work.}
+#
+
+# Constants
+PROGNAME=linfreeze
+NAMEPROPER=LinFreeze
+VERSION=0.1
+
+# Functions
+
+usage() {
+echo "$NAMEPROPER $VERSION -- Home folder freezing/persistence utility."
+echo ""
+echo "Usage:"
+echo "$PROGNAME [options] [user directory to freeze or unfreeze]"
+echo
+echo "Options:"
+echo "-h	Display this help message and exit."
+echo "-v	Display version information and exit."
+echo "-p	Prepares a user account for freezing."
+echo "-f	Freeze a user account directory."
+echo "-u	Unfreeze a user account directory."
+}
+
+ifroot() { # Checks if the current user is 'root', which is needed for this utility.
+if [ "$(whoami)" != "root" ];
+	then
+		echo "You must be the 'root' user to use this utility."
+		exit 1
+fi
+}
+
+freeze() { # This freezes the user account if the proper directories are in place.
+ifroot
+if [ ! -d /home/$OPTARG ]
+	then
+		echo "User account $OPTARG does not exist! Create it first."
+		exit 1
+fi
+if [ ! -d /home/$OPTARG.dynamic ];
+	then
+		echo "Dynamic directory missing, beginning prep..."
+		prep;
+fi
+if [ ! -d /home/$OPTARG.static ];
+	then
+		echo -n "Would you like to create a directory for temporary, 'frozen' files to be layed over the user directory? [Y/n]"
+		echo ""
+		read FREEZESTATIC
+fi
+if [ $FREEZESTATIC = y -o $FREEZESTATIC = Y ];
+	then
+		prep;
+fi
+cp /etc/fstab /etc/fstab.thaw
+echo tmpfs /home/$OPTARG.dynamic tmpfs defaults,noatime,uid=1000,gid=1000 0 0 >> /etc/fstab
+if [ -d /home/$OPTARG.static ];
+	then
+		echo none /home/$OPTARG aufs br=/home/$OPTARG.dynamic=rw:/home/$OPTARG.static=ro:/home/$OPTARG=ro 0 0 >> /etc/fstab
+		echo "User account $OPTARG is now 'frozen'. If you wish to put temporary files and/or folders in the static directory, please do so now by putting them in /home/$OPTARG.static. Reboot this computer and log in as that user to not make any changes."
+	else
+		echo none /home/$OPTARG aufs br=/home/$OPTARG.dynamic=rw:/home/$OPTARG=ro 0 0 >> /etc/fstab
+		echo "User account $OPTARG is now 'frozen'. Reboot this computer and log in as that user to not make any changes."
+fi
+}
+
+unfreeze() { # This unfreezes a user account that is frozen.
+ifroot
+if [ -f "/etc/fstab.thaw" ]
+	then
+		rm /etc/fstab
+		mv /etc/fstab.thaw /etc/fstab
+		echo "All user accounts have been un-frozen. If you put any files in your '/home/$OPTARG.static' directory, you may wish to move them back to your home directory or elsewhere now."
+	else
+		echo "This user is not frozen. Freeze them with $PROGNAME -f [user account]."
+		exit 1
+fi
+}
+
+prep() { # This prepares a user account for freezing.
+ifroot
+if [ -d /home/$OPTARG.dynamic ]
+	then
+		DYNAMDIR=1
+	else
+		DYNAMDIR=2
+fi
+if [ -d /home/$OPTARG.static ]
+	then
+		STATDIR=1
+	else
+		STATDIR=2
+fi
+if [ $DYNAMDIR = 2 ];
+	then
+		mkdir /home/$OPTARG.dynamic
+		chown $OPTARG /home/$OPTARG.dynamic
+	else
+		echo "Dynamic directory already present. Continuing..."
+fi
+if [ $STATDIR = 2 ];
+	then
+		echo -n "Would you like to create a directory for temporary, 'frozen' files to be layed over the user directory? [Y/n]"
+		echo ""
+		read statyes
+	else
+		echo "Static directory already created. Continuing..."
+fi
+if [ $statyes = Y -o $statyes = y ];
+	then
+		mkdir /home/$OPTARG.static
+		chown  $OPTARG /home/$OPTARG.static
+	else
+		echo "Continuing..."
+fi
+echo -n "Preparations complete! Would you like to freeze this user directory? [Y/n]"
+echo ""
+read FREEZING
+if [ $FREEZING = Y -o $FREEZING = y ]
+	then
+		freeze
+	else
+		continue
+fi
+}
+
+# parse command line arguments
+while getopts hvp:f:u: OPT; do
+    case "$OPT" in
+	h|--help)	usage;
+		exit 0
+		;;
+	v|--version)	echo "$NAMEPROPER version $VERSION"
+		exit 0
+		;;
+	p|--prep)	prep;	
+		exit 0
+		;;
+	f|--freeze)	freeze;
+		exit 0	
+		;;
+	u|--unfreeze)	unfreeze;
+		exit 0
+		;;
+	*)	usage;
+		exit 1
+		;;
+    esac
+done
+
+shift `expr $OPTIND - 1`
+
+# access additional parameters through $@ or $* as usual or using this loop:
+for PARAM; do
+    echo $PARAM
+done

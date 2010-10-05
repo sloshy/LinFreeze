@@ -1,0 +1,28 @@
+LinFreeze 0.1
+
+AUTHORS
+  Ryan Peters <sloshy45 [--at--] sbcglobal [--dot--] net>
+
+DESCRIPTION
+  LinFreeze is a script you can use to "freeze" a user's home directory so that file changes are not permanent.
+It does this by layering a tmpfs layer on top of the user's home folder, where all changes will be stored.
+Optionally, you may use a "static" directory to be layered on top of the home folder containing temporary, read-only files and folders.
+
+DEPENDENCIES
+  0-	aufs (aufs2 on Arch Linux)
+  1-	bash
+  2-	a standard, Linux filesystem structure with /etc/fstab and user directories in /home.
+  And that's it!
+
+INSTALL
+  Copy "linfreeze" to /usr/bin or whatever folder you wish, and make sure that it is executable.
+
+FUTURE PLANS
+  0-	A manpage.
+  1-	"Freezing" specific folders in a directory.
+  2-	Allowing certain files and folders to be exempt from "freezing", if possible.
+  3-	"Freezing" an entire partition.
+  4-	A GUI of some sort, maybe using GTK or Zenity.
+
+COPYING
+  LinFreeze is distributed under the GPL Version 3 or any higher version.
