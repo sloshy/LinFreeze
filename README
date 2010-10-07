@@ -1,4 +1,4 @@
-LinFreeze 0.1
+LinFreeze 0.2
 
 AUTHORS
   Ryan Peters <sloshy45 [--at--] sbcglobal [--dot--] net>
@@ -16,6 +16,14 @@ DEPENDENCIES
 
 INSTALL
   Copy "linfreeze" to /usr/bin or whatever folder you wish, and make sure that it is executable.
+
+INSTRUCTIONS
+  run 'linfreeze -h' to see a list of commands.
+  'linfreeze -f' lets you 'freeze' a user.
+  'linfreeze -a' adds a user to be frozen.
+  'linfreeze -u' 'unfreezes' all users and removes their 'dynamic' directories.
+  'linfreeze -p' prepares a user for freezing. this is called by '-f' and '-a' when needed, so only use this if necessary.
+  'linfreeze -c' removes the static directory for a user account.
 
 FUTURE PLANS
   0-	A manpage.

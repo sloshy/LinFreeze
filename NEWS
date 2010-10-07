@@ -1,0 +1,17 @@
+==2010-10-7==v0.2==
+
+  * Added ability to 'freeze' multiple users at once.
+  * Added a 'clean' function (-c) to remove the directories created by linfreeze.
+  * Re-phrased some sentences.
+  * Added NEWS file (this!) to record in-depth changes between official releases.
+  * Fixed loopholes where a user would be 'frozen' twice.
+  * Made sentences and questions more readable by spacing between them.
+  * Updated README
+
+
+==2010-10-5==v0.1==
+
+  * First Release!
+  * Introduced Ability to 'freeze' one user, undo it, and prepare for freezing.
+  * Added COPYRIGHT file containing GPLv3.
+  * Added README file.
