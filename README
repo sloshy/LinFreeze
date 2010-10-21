@@ -25,7 +25,7 @@ INSTRUCTIONS
   'linfreeze -f [user]' lets you 'freeze' a user.
   'linfreeze -d [directory]' recursively 'freezes' a directory.
   'linfreeze -u' 'unfreezes' all users and removes their 'dynamic' directories.
-  'linfreeze -c' removes the static directory for a user account.
+  'linfreeze -c' removes the temporary directories for users and directories.
 
 FUTURE PLANS
   0-	A manpage.
