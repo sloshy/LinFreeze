@@ -1,6 +1,7 @@
 #!/bin/bash -e
 #
-#   linfreeze - Freezes a user's home folder to prevent permanent file changes.
+#   linfreeze - Freezes a user's home folder or a directory to prevent 
+#   permanent file changes.
 #
 #   Copyright (C) 2010 Ryan Peters <sloshy45 [--at--] sbcglobal [--dot--] net>
 #
@@ -31,23 +32,29 @@
 # Constants
 PROGNAME=linfreeze
 NAMEPROPER=LinFreeze
-VERSION=0.2
+VERSION=0.5
+FROZNAME="/etc/.frozen"
+STATNAME="/etc/.static"
 
 # Functions
 
 usage() {
-echo "$NAMEPROPER $VERSION -- Home folder freezing/persistence utility."
+echo "$NAMEPROPER $VERSION -- Freezing/persistence utility."
+echo ""
+echo "WARNING: While in use, this program makes changes to /etc/fstab and /etc/rc.local."
+echo "Do not edit these files while a system is frozen, only before and after."
 echo ""
 echo "Usage:"
-echo "$PROGNAME [options] [user directory to freeze or unfreeze]"
+echo "$PROGNAME [options] [directory or user to freeze or unfreeze]"
 echo
 echo "Options:"
 echo "-h	Display this help message and exit."
 echo "-v	Display version information and exit."
-echo "-p	Prepares a user account for freezing."
-echo "-f	Freeze a user account directory."
-echo "-u	Unfreeze a user account directory."
-echo "-c	Removes the 'dynamic' and 'static' (if applicable) directories for a user account."
+echo ""
+echo "-d	Freezes a directory."
+echo "-f	Freeze a user account."
+echo "-u	Unfreezes all directories and users."
+echo "-c	Removes the 'static' directories for a user account or directory."
 }
 
 ifroot() { # Checks if the current user is 'root', which is needed for this utility.
@@ -58,44 +65,97 @@ if [ "$(whoami)" != "root" ];
 fi
 }
 
-freeze() { # This freezes the user account if the proper directories are in place.
+directory() { # Recursively freezes an individual folder
+ifroot
+DIRF=`echo "$OPTARG" | sed -e "s/\/*$//" ` # Removes the trailing slash of $OPTARG
+if [ ! -d $DIRF ];
+	then
+		echo "Directory $OPTARG does not exist! Please enter an existing directory or create it with 'mkdir $OPTARG'."
+		exit 1
+fi
+if [ -d $DIRF.dynamic ];
+	then
+		echo "This directory is already frozen! Unfreeze it with $PROGNAME -u."
+		exit 1
+fi
+if [ ! -f /etc/.frozen ];
+	then
+		touch /etc/.frozen
+fi
+if [ ! -f /etc/fstab.thaw ];
+	then
+		cp /etc/fstab /etc/fstab.thaw
+fi
+mkdir $DIRF.dynamic
+echo $DIRF.dynamic >> /etc/.frozen
+echo tmpfs $DIRF.dynamic tmpfs defaults,noatime,uid=1000,gid=1000 0 0 >> /etc/fstab
+if [ ! -d $DIRF.static ]
+	then
+		echo "Would you like to create a directory for temporary, 'frozen' files"
+		echo -n "to be layed over the directory? [Y/n]: "
+		read STATYES
+		echo ""
+fi
+if [ -d $DIRF.static ];
+	then
+		touch /etc/.static
+		echo $DIRF.static >> /etc/.static
+		echo none $DIRF aufs br=$DIRF.dynamic=rw:$DIRF.static=ro:$DIRF=ro 0 0 >> /etc/fstab
+		echo "Folder $DIRF is now frozen. Reboot your computer to not make any changes."
+		echo ""
+		echo "If you wish to put temporary files and/or folders in the static directory, please do so now by putting them in $DIRF.static."
+		exit 0
+fi
+if [ "$STATYES" = "Y" -o "$STATYES" = "y" ]
+	then
+		mkdir $DIRF.static
+		touch /etc/.static
+		echo $DIRF.static >> /etc/.static
+		echo none $DIRF aufs br=$DIRF.dynamic=rw:$DIRF.static=ro:$DIRF=ro 0 0 >> /etc/fstab
+		echo "Folder $DIRF is now frozen. Reboot your computer to not make any changes."
+		echo ""
+		echo "If you wish to put temporary files and/or folders in the static directory, please do so now by putting them in $DIRF.static."	
+	else
+		echo none $DIRF aufs br=$DIRF.dynamic=rw:$DIRF=ro 0 0 >> /etc/fstab
+		echo "Folder $DIRF is now frozen. Reboot your computer to not make any changes."
+fi
+}
+
+user() { # This freezes the user account if the proper directories are in place.
 ifroot
 if [ ! -d /home/$OPTARG ];
 	then
 		echo "User account $OPTARG does not exist! Create it first."
 		exit 1
 fi
-if [ -f /etc/fstab.thaw ];
-	then
-		echo -n "There is already a user 'frozen' on this filesystem. Would you like to 'freeze' this user as well? [Y/n]: "
-		read ADDUSERFREEZE
-		echo ""
-fi
-if [ "$ADDUSERFREEZE" = "Y" -o "$ADDUSERFREEZE" = "y" ];
-	then
-		addfreeze
-		exit 0
-fi
 if [ ! -d /home/$OPTARG.dynamic ];
 	then
 		echo "Dynamic directory missing, beginning prep..."
 		echo ""
 		prep;
+	else
+		echo "User account $OPTARG is already frozen!"
+		echo "Exiting..."
+		exit 1
 fi
 if [ ! -d /home/$OPTARG.static ];
 	then
 		echo -n "Would you like to create a directory for temporary, 'frozen' files to be layed over the user directory? [Y/n]: "
-		read FREEZESTATIC
+		read STATIC
 		echo ""
 fi
-if [ "$FREEZESTATIC" = "y" -o "$FREEZESTATIC" = "Y" ];
+if [ "$STATIC" = "y" -o "$STATIC" = "Y" ];
 	then
 		prep;
 fi
-cp /etc/fstab /etc/fstab.thaw
+if [ ! -f /etc/fstab.thaw ];
+	then
+		cp /etc/fstab /etc/fstab.thaw
+fi
 echo tmpfs /home/$OPTARG.dynamic tmpfs defaults,noatime,uid=1000,gid=1000 0 0 >> /etc/fstab
 if [ -d /home/$OPTARG.static ];
 	then
+		echo /home/$OPTARG.static >> /etc/.static
 		echo none /home/$OPTARG aufs br=/home/$OPTARG.dynamic=rw:/home/$OPTARG.static=ro:/home/$OPTARG=ro 0 0 >> /etc/fstab
 		echo "User account $OPTARG is now 'frozen'. Reboot this computer and log in as that user to not make any permanent changes."
 		echo ""
@@ -106,72 +166,9 @@ if [ -d /home/$OPTARG.static ];
 fi
 }
 
-addfreeze() { # Adds a user to /etc/fstab to be frozen without modifying /etc/fstab.thaw
-ifroot
-if [ ! -f /etc/fstab.thaw ];
-	then
-		echo "No accounts are 'frozen'. Please use $PROGNAME -f $OPTARG instead."
-		exit 1
-fi
-if [ -d /home/$OPTARG.dynamic ];
-	then
-		echo "This user account is already frozen. Unfreeze all users with $PROGNAME -u or enter another user."
-		exit 1
-fi
-prep
-if [ -d /home/$OPTARG.dynamic ];
-	then
-		echo tmpfs /home/$OPTARG.dynamic tmpfs defaults,noatime,uid=1000,gid=1000 0 0 >> /etc/fstab
-	else
-		echo "'Dynamic' directory not present! Exiting..."
-		exit 1
-fi
-if [ -d /home/$OPTARG.static ];
-	then
-		echo none /home/$OPTARG aufs br=/home/$OPTARG.dynamic=rw:/home/$OPTARG=ro 0 0 >> /etc/fstab
-fi
-echo "User account $OPTARG is now 'frozen'. Reboot this computer and log in as that user to not make any changes."
-}
-
-unfreeze() { # This unfreezes all user accounts that are frozen.
-ifroot
-if [ -f /etc/fstab.thaw ];
-	then
-		echo -n "Would you like to 'unfreeze' all user accounts? (To 're-freeze' specific users, freeze them with $PROGNAME -f [user]) [Y/n]: "
-		read UNFREEZE
-		echo ""
-	else
-		echo "There are no 'frozen' users. Freeze them with $PROGNAME -f [user account]."
-		exit 1
-fi
-if [ "$UNFREEZE" = "Y" -o "$UNFREEZE" = "y" ];
-	then
-		rm /etc/fstab
-		mv /etc/fstab.thaw /etc/fstab
-		rm -rf /home/*.dynamic
-		echo "All user accounts have been 'un-frozen'. If you put any files in a 'static' directory, you may wish to move them back to its respective home folder or elsewhere now."
-		echo ""
-		echo "To remove the 'static' directories, if any, use $PROGNAME -c [option]."
-	else
-		"Leaving system as-is."
-fi
-}
-
 prep() { # This prepares a user account for freezing.
 ifroot
-if [ -d /home/$OPTARG.dynamic ];
-	then
-		DYNAMDIR=1
-	else
-		DYNAMDIR=2
-fi
-if [ -d /home/$OPTARG.static ];
-	then
-		STATDIR=1
-	else
-		STATDIR=2
-fi
-if [ "$DYNAMDIR" = "2" ];
+if [ ! -d /home/$OPTARG.dynamic ];
 	then
 		echo "Making dynamic directory at /home/$OPTARG.dynamic for temporary files..."
 		echo ""
@@ -181,7 +178,7 @@ if [ "$DYNAMDIR" = "2" ];
 		echo "Dynamic directory already present. Continuing..."
 		echo ""
 fi
-if [ "$STATDIR" = "2" ];
+if [ ! -d /home/$OPTARG.static ];
 	then
 		echo -n "Would you like to create a directory for temporary, 'frozen' files to be layed over the user directory at /home/$OPTARG.static? [Y/n]: "
 		read STATYES
@@ -198,34 +195,111 @@ fi
 echo "Preparations complete!"
 }
 
-clean() { # Removes static directories for a user account.
+unfreeze() { # This unfreezes all user accounts and directories that are frozen.
 ifroot
-if [ -d /home/$OPTARG.dynamic ];
+if [ -f /etc/fstab.thaw ];
 	then
-		echo "This user account is frozen. Use $PROGNAME -u to unfreeze all users."
-		exit 1
-fi
-if [ -d /home/$OPTARG.static ];
-	then
-		echo "Remove 'static' directory?"
-		echo "***WARNING: If you put files in  /home/$OPTARG.static, then they will be GONE FOREVER without a recovery tool!*** [Y/n]: "
-		read REMSTATIC
+		echo -n "Would you like to 'unfreeze' all user accounts and directories? [Y/n]: "
+		read UNFREEZE
 		echo ""
 	else
-		echo "No 'static' directory found for $OPTARG."
+		echo "There are no 'frozen' users or directories." 
+		echo "Freeze them with $PROGNAME [-f -d] [user account or directory]."
+		exit 1
+fi
+if [ "$UNFREEZE" = "Y" -o "$UNFREEZE" = "y" ];
+	then
+		rm /etc/fstab
+		mv /etc/fstab.thaw /etc/fstab
+		YESH=NOSH
+	else
+		"Leaving system as-is."
+		exit 0
+fi
+if [ -f /etc/.frozen ];
+	then
+		YESH=YESH 
+fi
+if [ -f /root/.rebooted ];
+	then
+		rm -rf /home/*.dynamic
+fi		
+if [ -f /root/.rebooted -a -f /etc/.frozen ];
+	then
+		while read FROZDIR; do
+		rm -rf $FROZDIR
+		done < $FROZNAME
+		sed -i '/.dynamic/ d' $FROZNAME
+fi
+if [ "$YESH" = "NOSH" ];
+	then
+		echo "All user accounts and/or directories have been 'un-frozen'."
+		echo ""
+		echo "First reboot your computer for the temporary 'dynamic' directories to be safely unmounted."
+		echo ""
+		echo "Then run $PROGNAME -c after rebooting to remove the temporary directories."
+		echo ""
+		echo "If you put any files in a 'static' directory, you may wish to move them back to its respective folder or elsewhere now."
+		echo ""
+		echo "To remove the 'static' directories, if any, use $PROGNAME -c [user or directory] after rebooting."
+touch /root/.rebooted
+fi
+}
+
+clean() { # Removes static directories for a user account.
+ifroot
+if [ -f /etc/fstab.thaw ];
+	then
+		echo "WARNING: Some users or directories are already frozen on this system."
+		echo "Please 'un-freeze' ($PROGNAME -u) all users and directories first before cleaning 'static' directories."
+		exit 1
+fi
+if [ -f /root/.rebooted ];
+	then
+		echo -n "Remove 'dynamic' directories for all users and folders? [Y/n]: "
+		read REMDYN
+		echo ""
+	else
+		REMDYN=N
+fi
+if [ "$REMDYN" = "Y" -o "$REMDYN" = "y" ];
+	then
+		rm -rf /home/*.dynamic
+		while read FROZDIR; do
+		rm -rf $FROZDIR
+		done < $FROZNAME
+		sed -i '/.dynamic/ d' $FROZNAME
+fi
+echo -n "Remove 'static' directories for all users? [Y/n]: "
+read HERP
+echo ""
+if [ "$HERP" = "Y" -o "$HERP" = "y" ];
+	then
+		rm -rf /home/*.static
+		echo "'Static' directories for users removed."
 		echo ""
 fi
-if [ "$REMSTATIC" = "Y" -o "$REMSTATIC" = "y" ];
+if [ -f /etc/.static ];
 	then
-		echo "Removing /home/$OPTARG.static..."
+		echo -n "Remove 'static' directories for individual directories? [Y/n]: "
+		read LAWL
 		echo ""
-		rm -rf /home/$OPTARG.static
+	else
+		LAWL=N
+fi
+if [ "$LAWL" = "Y" -o "$LAWL" = y ];
+	then
+		while read STATDIR; do
+		rm -rf $STATDIR
+		echo "Removed $STATDIR."
+		done < $STATNAME
+		sed -i '/.static/ d' $STATNAME
 fi
 echo "Cleanup complete!"
 }
 
 # parse command line arguments
-while getopts hvp:f:uc: OPT; do
+while getopts hvd:f:uc OPT; do
     case "$OPT" in
 	h)	usage;
 		exit 0
@@ -233,10 +307,10 @@ while getopts hvp:f:uc: OPT; do
 	v)	echo "$NAMEPROPER version $VERSION"
 		exit 0
 		;;
-	p)	prep;	
+	d)	directory;
 		exit 0
 		;;
-	f)	freeze;
+	f)	user;
 		exit 0	
 		;;
 	u)	unfreeze;
@@ -251,9 +325,3 @@ while getopts hvp:f:uc: OPT; do
     esac
 done
 
-shift `expr $OPTIND - 1`
-
-# access additional parameters through $@ or $* as usual or using this loop:
-for PARAM; do
-    echo $PARAM
-done

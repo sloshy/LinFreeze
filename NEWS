@@ -1,3 +1,11 @@
+==2010-10-14==v0.5==
+
+  * Freezing directories (-d) is now possible! The list of frozen directories is located in /etc/frozen.
+  * Merged the ability to freeze multiple users with the original 'freeze' (-f) function.
+  * Rewrote the 'clean' (-c) and 'unfreeze' (-u) functions to support frozen directories.
+  * Fixed an awful bug which wouldn't let you un-freeze a user while a system was frozen.
+  * Removed direct access to the 'prep' (formerly -p) function because of pointlessness.
+
 ==2010-10-7==v0.2==
 
   * Added ability to 'freeze' multiple users at once.
@@ -6,7 +14,7 @@
   * Added NEWS file (this!) to record in-depth changes between official releases.
   * Fixed loopholes where a user would be 'frozen' twice.
   * Made sentences and questions more readable by spacing between them.
-  * Updated README
+  * Updated README.
 
 
 ==2010-10-5==v0.1==

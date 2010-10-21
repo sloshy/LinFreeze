@@ -1,17 +1,20 @@
-LinFreeze 0.2
+LinFreeze 0.5
+
+WARNING: THIS SCRIPT CAN EAT YOUR BABIES IF MISUSED! BE VERY CAREFUL OR IT MAY MESS UP YOUR SYSTEM! I TAKE NO RESPONSABILITY FOR ANY DAMAGE CAUSED, AND THERE IS NO WARRANTY.
 
 AUTHORS
   Ryan Peters <sloshy45 [--at--] sbcglobal [--dot--] net>
 
 DESCRIPTION
-  LinFreeze is a script you can use to "freeze" a user's home directory so that file changes are not permanent.
-It does this by layering a tmpfs layer on top of the user's home folder, where all changes will be stored.
-Optionally, you may use a "static" directory to be layered on top of the home folder containing temporary, read-only files and folders.
+  LinFreeze is a script you can use to "freeze" a user's home directory or any other directory so that file changes are not permanent.
+It does this by layering a tmpfs layer on top of the user's home folder (or the directory of your choosing), where all changes will be stored.
+Optionally, you may use a "static" directory to be layered on top of the directory containing temporary, read-only files and folders.
 
 DEPENDENCIES
   0-	aufs (aufs2 on Arch Linux)
   1-	bash
-  2-	a standard, Linux filesystem structure with /etc/fstab and user directories in /home.
+  2-	sed
+  3-	a standard, Linux filesystem structure with /etc/fstab and user directories in /home
   And that's it!
 
 INSTALL
@@ -19,18 +22,18 @@ INSTALL
 
 INSTRUCTIONS
   run 'linfreeze -h' to see a list of commands.
-  'linfreeze -f' lets you 'freeze' a user.
-  'linfreeze -a' adds a user to be frozen.
+  'linfreeze -f [user]' lets you 'freeze' a user.
+  'linfreeze -d [directory]' recursively 'freezes' a directory.
   'linfreeze -u' 'unfreezes' all users and removes their 'dynamic' directories.
-  'linfreeze -p' prepares a user for freezing. this is called by '-f' and '-a' when needed, so only use this if necessary.
   'linfreeze -c' removes the static directory for a user account.
 
 FUTURE PLANS
   0-	A manpage.
-  1-	"Freezing" specific folders in a directory.
-  2-	Allowing certain files and folders to be exempt from "freezing", if possible.
-  3-	"Freezing" an entire partition.
-  4-	A GUI of some sort, maybe using GTK or Zenity.
+  1-	Allowing certain files and folders to be exempt from "freezing", if possible.
+  2-	"Freezing" an entire partition.
+  3-	A GUI of some sort, maybe using GTK or Zenity.
+  4-	Listing the users and directories that are frozen.
+  5-	'Unfreezing' specific users and directories.
 
 COPYING
   LinFreeze is distributed under the GPL Version 3 or any higher version.
