@@ -299,6 +299,11 @@ echo "Cleanup complete!"
 }
 
 # parse command line arguments
+if [ $# -le 1 ]; then
+       usage;
+       exit 0;
+fi
+
 while getopts hvd:f:uc OPT; do
     case "$OPT" in
 	h)	usage;
