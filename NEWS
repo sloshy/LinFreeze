@@ -1,3 +1,8 @@
+==2010-10-21==v0.5.1
+
+  * An argunment list is presented when you launch linfreeze without an argument, not just "-h".
+  * Minor corrections in NEWS and README files.
+
 ==2010-10-14==v0.5==
 
   * Freezing directories (-d) is now possible! The list of frozen directories is located in /etc/.frozen.
