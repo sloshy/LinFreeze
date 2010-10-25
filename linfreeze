@@ -54,7 +54,7 @@ echo ""
 echo "-d	Freezes a directory."
 echo "-f	Freeze a user account."
 echo "-u	Unfreezes all directories and users."
-echo "-c	Removes the 'static' directories for a user account or directory."
+echo "-c	Removes the temporary directories for a user account or directory."
 }
 
 ifroot() { # Checks if the current user is 'root', which is needed for this utility.
