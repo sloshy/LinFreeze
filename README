@@ -33,12 +33,11 @@ INSTRUCTIONS
   'linfreeze -c' removes the temporary directories for users and directories.
 
 FUTURE PLANS
-  0-	A manpage.
-  1-	Allowing certain files and folders to be exempt from "freezing", if possible.
-  2-	"Freezing" an entire partition.
-  3-	A GUI of some sort, maybe using GTK or Zenity.
-  4-	Listing the users and directories that are frozen.
-  5-	'Unfreezing' specific users and directories.
+  0-	Allowing certain files and folders to be exempt from "freezing", if possible.
+  1-	"Freezing" an entire partition.
+  2-	A GUI of some sort, maybe using GTK or Zenity.
+  3-	Listing the users and directories that are frozen.
+  4-	'Unfreezing' specific users and directories.
 
 COPYING
   LinFreeze is distributed under the GPL Version 3 or any higher version.
