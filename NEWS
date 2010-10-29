@@ -1,3 +1,10 @@
+==2010-10-27==v0.5.2
+
+  * The 'freeze directory' (-d) function now lets you change the owner of temporary directories.
+  * Edidted text for clarity and consistency.
+  * Man page is now included.
+  * Makefile is now included.
+
 ==2010-10-21==v0.5.1
 
   * An argunment list is presented when you launch linfreeze without an argument, not just "-h".

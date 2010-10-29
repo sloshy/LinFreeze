@@ -1,4 +1,4 @@
-LinFreeze 0.5.1
+LinFreeze 0.5.2
 
 WARNING: THIS SCRIPT CAN EAT YOUR BABIES IF MISUSED! BE VERY CAREFUL OR IT MAY MESS UP YOUR SYSTEM! I TAKE NO RESPONSABILITY FOR ANY DAMAGE CAUSED, AND THERE IS NO WARRANTY.
 
@@ -14,16 +14,21 @@ DEPENDENCIES
   0-	aufs (aufs2 on Arch Linux)
   1-	bash
   2-	sed
-  3-	a standard, Linux filesystem structure with /etc/fstab and user directories in /home
-  And that's it!
+  3-	gzip
+  4-	A standard, UNIX-like filesystem structure with /etc/fstab and user directories in /home
 
 INSTALL
-  Copy "linfreeze" to /usr/bin or whatever folder you wish, and make sure that it is executable.
+  1. Copy "linfreeze" to /usr/bin.
+  2. Compress "linfreeze.1", the man page, with gzip.
+  3. Copy "linfreeze.1.gz" to /usr/share/man/man1.
+
+PACKAGES
+  Arch Linux: http://aur.archlinux.org/packages.php?ID=41504
 
 INSTRUCTIONS
-  run 'linfreeze -h' to see a list of commands.
-  'linfreeze -f [user]' lets you 'freeze' a user.
+  run 'linfreeze -h' to see a list of commands and 'linfreeze -v' to see the version number.
   'linfreeze -d [directory]' recursively 'freezes' a directory.
+  'linfreeze -f [user]' lets you 'freeze' a user.
   'linfreeze -u' 'unfreezes' all users and removes their 'dynamic' directories.
   'linfreeze -c' removes the temporary directories for users and directories.
 

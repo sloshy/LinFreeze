@@ -1,7 +1,6 @@
 #!/bin/bash -e
 #
-#   linfreeze - Freezes a user's home folder or a directory to prevent 
-#   permanent file changes.
+#   linfreeze - Utility to prevent permanent file changes.
 #
 #   Copyright (C) 2010 Ryan Peters <sloshy45 [--at--] sbcglobal [--dot--] net>
 #
@@ -32,16 +31,16 @@
 # Constants
 PROGNAME=linfreeze
 NAMEPROPER=LinFreeze
-VERSION=0.5
+VERSION=0.5.2
 FROZNAME="/etc/.frozen"
 STATNAME="/etc/.static"
 
 # Functions
 
 usage() {
-echo "$NAMEPROPER $VERSION -- Freezing/persistence utility."
+echo "$NAMEPROPER $VERSION -- Utility to prevent permanent file changes."
 echo ""
-echo "WARNING: While in use, this program makes changes to /etc/fstab and /etc/rc.local."
+echo "WARNING: While in use, this program makes changes to /etc/fstab."
 echo "Do not edit these files while a system is frozen, only before and after."
 echo ""
 echo "Usage:"
@@ -51,10 +50,10 @@ echo "Options:"
 echo "-h	Display this help message and exit."
 echo "-v	Display version information and exit."
 echo ""
-echo "-d	Freezes a directory."
-echo "-f	Freeze a user account."
-echo "-u	Unfreezes all directories and users."
-echo "-c	Removes the temporary directories for a user account or directory."
+echo "-d	'Freeze' a directory to prevent permanent file changes."
+echo "-f	'Freeze' a user account to prevent permanent file changes."
+echo "-u	'Unfreeze' all directories and users."
+echo "-c	Remove the temporary directories for a user account or directory."
 }
 
 ifroot() { # Checks if the current user is 'root', which is needed for this utility.
@@ -104,7 +103,7 @@ if [ -d $DIRF.static ];
 		echo "Folder $DIRF is now frozen. Reboot your computer to not make any changes."
 		echo ""
 		echo "If you wish to put temporary files and/or folders in the static directory, please do so now by putting them in $DIRF.static."
-		exit 0
+		STATYES=N
 fi
 if [ "$STATYES" = "Y" -o "$STATYES" = "y" ]
 	then
@@ -114,10 +113,46 @@ if [ "$STATYES" = "Y" -o "$STATYES" = "y" ]
 		echo none $DIRF aufs br=$DIRF.dynamic=rw:$DIRF.static=ro:$DIRF=ro 0 0 >> /etc/fstab
 		echo "Folder $DIRF is now frozen. Reboot your computer to not make any changes."
 		echo ""
-		echo "If you wish to put temporary files and/or folders in the static directory, please do so now by putting them in $DIRF.static."	
+		echo "If you wish to put temporary files and/or folders in the static directory, please do so now by putting them in $DIRF.static."
+		echo ""
 	else
 		echo none $DIRF aufs br=$DIRF.dynamic=rw:$DIRF=ro 0 0 >> /etc/fstab
 		echo "Folder $DIRF is now frozen. Reboot your computer to not make any changes."
+		echo ""
+fi
+chowndir
+if [ -d /home/$CHOWNUSER ];
+	then
+		chown $CHOWNUSER $DIRF.dynamic
+		[ -d $DIRF.static ] && chown $CHOWNUSER $DIRF.static
+		RETRY=N
+	else
+		echo -n "User $CHOWNUSER does not exist! Retry? [Y/n]: "
+		read RETRY
+		echo ""
+fi
+if [ "$RETRY" = "Y" -o "$RETRY" = "y" ];
+	then
+		chowndir
+	else
+		echo "Exiting..."
+fi
+}
+
+chowndir() { # Changes ownership of temporary directories
+ifroot
+echo "Would you like to set the ownership of the dynamic and static directories?"
+echo -n "This is necessary if the directory frozen was not in a home directory. [Y/n]: "
+read CHOWNYES
+echo ""
+if [ "$CHOWNYES" = "Y" -o "$CHOWNYES" = "y" ];
+	then
+		echo -n "Which user would you like to own the temporary directories?"
+		read CHOWNUSER
+		echo ""
+	else
+		echo "Exiting..."
+		exit 0
 fi
 }
 
@@ -218,11 +253,7 @@ if [ "$UNFREEZE" = "Y" -o "$UNFREEZE" = "y" ];
 fi
 if [ -f /etc/.frozen ];
 	then
-		YESH=YESH 
-fi
-if [ -f /root/.rebooted ];
-	then
-		rm -rf /home/*.dynamic
+		YESH=YESH
 fi		
 if [ -f /root/.rebooted -a -f /etc/.frozen ];
 	then

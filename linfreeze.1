@@ -1,0 +1,110 @@
+.Dd October 26, 2010
+.Os Linux
+.Dt LINFREEZE 1
+.
+.
+.Sh NAME
+.Nm LinFreeze
+.Nd Utility to prevent permanent file changes across reboots.
+.
+.Sh SYNOPSYS
+.Nm linfreeze
+.Op Fl h
+.Op Fl v
+.Op Fl d Ar directory
+.Op Fl f Ar user
+.Op Fl u
+.Op Fl c
+.
+.Sh OPTIONS
+.Fl h
+.D1 Display usage information and exit.
+.Fl v
+.D1 Display version information and exit.
+.Fl d Op Ar directory
+.D1 So Freeze Sc a directory to prevent permanent changes.
+.Fl f Op Ar user
+.D1 So Freeze Sc a user account.
+.Fl u
+.D1 So Un-freeze Sc all accounts and directories.
+.Fl c
+.D1 Removes all temporary directories used for freezing.
+.
+.Sh DESCRIPTION
+.Nm LinFreeze
+is a utility to
+.Sq freeze
+a user's home folder or any directory, meaning that the files and folders within that directory are 
+.Pq recursively
+prevented from being permanently changed. Any changes made to these files and folders are not permanent, and when the system is rebooted the files and folders are returned to their original state.
+.Pp
+.Nm LinFreeze
+can do this by modifying
+.Pa /etc/fstab
+to lay a tmpfs layer on top of it where all temporary changes are stored and later discarded upon rebooting. The tmpfs layer is always located at /path/to/frozen/directory.dynamic. Optionally, a
+.So static Sc
+directory may be made where you may put read-only files to be layed above the original directory, but under the dynamic directory. The arguments 
+.Op Fl d Ar directory
+and
+.Op Fl f Ar user
+can be used to freeze a directory or a user, respectively.
+.Pp
+When a user or directory is frozen,
+.Pa /etc/fstab.thaw
+is created as a backup of the old
+.Pa /etc/fstab
+file. Lines containing the users and directories frozen are appended to the end of
+.Pa /etc/fstab.
+A list of dynamic directories is included in
+.Pa /etc/.frozen
+and a list of static directories, if any, is included in
+.Pa /etc/.static.
+.Pp
+The argument
+.Op Fl u
+is used to un-freeze directories by replacing
+.Pa /etc/fstab
+with
+.Pa /etc/fstab.thaw.
+After it successfully completes, a message to reboot and use the
+.Op Fl c
+argument is shown.
+.Op Fl c
+removes the dynamic and, if applicable, static directories after they have been unloaded from rebooting.
+.
+.Sh IMPLEMENTATION NOTES
+Dependencies:
+.Bl -dash -offset indent -compact
+.It
+Bash
+.It
+aufs2
+.It
+tmpfs
+.It
+sed
+.It
+gzip
+.It
+UNIX-like filesystem structure with
+.Pa /etc/fstab
+and user directories in
+.Pa /home
+.
+.Sh FILES
+List of files that
+.Nm LinFreeze
+accesses and creates:
+.Bl -item
+.It
+.Pa /etc/fstab
+.It
+.Pa /etc/.frozen
+.It
+.Pa /etc/.static
+.
+.Sh AUTHOR
+.An Ryan Peters Aq sloshy45 AT sbgclobal DOT net
+.
+.Sh COPYRIGHT
+Copyright 2010 Ryan Peters. Licensed under the GPLv3 or newer.
