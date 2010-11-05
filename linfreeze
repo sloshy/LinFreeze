@@ -32,8 +32,9 @@
 PROGNAME=linfreeze
 NAMEPROPER=LinFreeze
 VERSION=0.5.2
-FROZNAME="/etc/.frozen"
+FROZNAME="/etc/.dynamic"
 STATNAME="/etc/.static"
+LISTNAME="/etc/.frozdirs"
 
 # Functions
 
@@ -50,10 +51,11 @@ echo "Options:"
 echo "-h	Display this help message and exit."
 echo "-v	Display version information and exit."
 echo ""
-echo "-d	'Freeze' a directory to prevent permanent file changes."
-echo "-f	'Freeze' a user account to prevent permanent file changes."
-echo "-u	'Unfreeze' all directories and users."
+echo "-d	Freeze a directory to prevent permanent file changes."
+echo "-f	Freeze a user account to prevent permanent file changes."
+echo "-u	Unfreeze all directories and users."
 echo "-c	Remove the temporary directories for a user account or directory."
+echo "-l	Lists the frozen users and directories."
 }
 
 ifroot() { # Checks if the current user is 'root', which is needed for this utility.
@@ -61,6 +63,15 @@ if [ "$(whoami)" != "root" ];
 	then
 		echo "You must be the 'root' user to use this utility."
 		exit 1
+fi
+}
+
+checkfiles() { # Checks if /etc/.frozen exists and renames it to /etc/.dynamic.
+ifroot
+if [ -f /etc/.frozen ];
+	then
+		cp /etc/.frozen /etc/.dynamic
+		rm /etc/.frozen
 fi
 }
 
@@ -77,16 +88,18 @@ if [ -d $DIRF.dynamic ];
 		echo "This directory is already frozen! Unfreeze it with $PROGNAME -u."
 		exit 1
 fi
-if [ ! -f /etc/.frozen ];
+checkfiles
+if [ ! -f /etc/.dynamic ];
 	then
-		touch /etc/.frozen
+		touch /etc/.dynamic
 fi
 if [ ! -f /etc/fstab.thaw ];
 	then
 		cp /etc/fstab /etc/fstab.thaw
 fi
 mkdir $DIRF.dynamic
-echo $DIRF.dynamic >> /etc/.frozen
+echo $DIRF.dynamic >> $FROZNAME
+echo $DIRF >> $LISTNAME
 echo tmpfs $DIRF.dynamic tmpfs defaults,noatime,uid=1000,gid=1000 0 0 >> /etc/fstab
 if [ ! -d $DIRF.static ]
 	then
@@ -97,8 +110,8 @@ if [ ! -d $DIRF.static ]
 fi
 if [ -d $DIRF.static ];
 	then
-		touch /etc/.static
-		echo $DIRF.static >> /etc/.static
+		touch $STATNAME
+		echo $DIRF.static >> $STATNAME
 		echo none $DIRF aufs br=$DIRF.dynamic=rw:$DIRF.static=ro:$DIRF=ro 0 0 >> /etc/fstab
 		echo "Folder $DIRF is now frozen. Reboot your computer to not make any changes."
 		echo ""
@@ -227,11 +240,17 @@ if [ "$STATYES" = "Y" -o "$STATYES" = "y" ];
 		mkdir /home/$OPTARG.static
 		chown  $OPTARG /home/$OPTARG.static
 fi
+echo /home/$OPTARG >> $LISTNAME
 echo "Preparations complete!"
 }
 
 unfreeze() { # This unfreezes all user accounts and directories that are frozen.
 ifroot
+if [ -f /root/.rebooted ];
+	then
+		echo "There are users and/or directories waiting to be un-frozen."
+		echo "Please reboot this computer and type $PROGNAME -c"
+fi
 if [ -f /etc/fstab.thaw ];
 	then
 		echo -n "Would you like to 'unfreeze' all user accounts and directories? [Y/n]: "
@@ -251,11 +270,12 @@ if [ "$UNFREEZE" = "Y" -o "$UNFREEZE" = "y" ];
 		"Leaving system as-is."
 		exit 0
 fi
-if [ -f /etc/.frozen ];
+checkfiles
+if [ -f $FROZNAME ];
 	then
 		YESH=YESH
 fi		
-if [ -f /root/.rebooted -a -f /etc/.frozen ];
+if [ -f "/root/.rebooted" -a -f "$FROZNAME" ];
 	then
 		while read FROZDIR; do
 		rm -rf $FROZDIR
@@ -274,11 +294,15 @@ if [ "$YESH" = "NOSH" ];
 		echo ""
 		echo "To remove the 'static' directories, if any, use $PROGNAME -c [user or directory] after rebooting."
 touch /root/.rebooted
+if [ -f $LISTNAME ];
+	then
+		rm $LISTNAME
 fi
 }
 
 clean() { # Removes static directories for a user account.
 ifroot
+checkfiles
 if [ -f /etc/fstab.thaw ];
 	then
 		echo "WARNING: Some users or directories are already frozen on this system."
@@ -300,6 +324,7 @@ if [ "$REMDYN" = "Y" -o "$REMDYN" = "y" ];
 		rm -rf $FROZDIR
 		done < $FROZNAME
 		sed -i '/.dynamic/ d' $FROZNAME
+		rm /root/.rebooted
 fi
 echo -n "Remove 'static' directories for all users? [Y/n]: "
 read HERP
@@ -327,6 +352,17 @@ if [ "$LAWL" = "Y" -o "$LAWL" = y ];
 		sed -i '/.static/ d' $STATNAME
 fi
 echo "Cleanup complete!"
+}
+
+listfrozen() { # Lists frozen users and directories.
+if [ -f $LISTNAME ];
+	then
+		cat $LISTNAME
+	else
+		echo "There appear to be no frozen directories on this system."
+		echo "Exiting..."
+		exit 1
+fi
 }
 
 # parse command line arguments
