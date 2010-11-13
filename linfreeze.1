@@ -27,7 +27,9 @@
 .Fl f Op Ar user
 .D1 So Freeze Sc a user account.
 .Fl u
-.D1 So Un-freeze Sc all accounts and directories.
+.D1 So Unfreeze Sc all accounts and directories.
+.Fl s Op Ar user or directory
+.D1 So Unfreeze Sc a specific account or directory.
 .Fl c
 .D1 Removes all temporary directories used for freezing.
 .Fl l
@@ -76,9 +78,9 @@ argument is shown.
 removes the dynamic and, if applicable, static directories after they have been unloaded from rebooting. The
 .Op s
 argument, followed by a
-.So frozen .Sc
+.So frozen Sc
 user or directory,
-.So unfreezes .Sc
+.So unfreezes Sc
 a specific user or directory that is frozen.
 .Pp
 Also, the
