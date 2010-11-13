@@ -1,4 +1,4 @@
-LinFreeze 0.5.2
+LinFreeze 0.9 (1.0 RC)
 
 WARNING: THIS SCRIPT CAN EAT YOUR BABIES IF MISUSED! BE VERY CAREFUL OR IT MAY MESS UP YOUR SYSTEM! I TAKE NO RESPONSABILITY FOR ANY DAMAGE CAUSED, AND THERE IS NO WARRANTY.
 
@@ -29,15 +29,10 @@ INSTRUCTIONS
   run 'linfreeze -h' to see a list of commands and 'linfreeze -v' to see the version number.
   'linfreeze -d [directory]' recursively 'freezes' a directory.
   'linfreeze -f [user]' lets you 'freeze' a user.
-  'linfreeze -u' 'unfreezes' all users and removes their 'dynamic' directories.
+  'linfreeze -u' 'unfreezes' all users and removes their temporary directories.
+  'linfreeze -s [user or directory]' 'unfreezes' a specific user or directory, leaving the others untouched.
   'linfreeze -c' removes the temporary directories for users and directories.
-
-FUTURE PLANS
-  0-	Allowing certain files and folders to be exempt from "freezing", if possible.
-  1-	"Freezing" an entire partition.
-  2-	A GUI of some sort, maybe using GTK or Zenity.
-  3-	Listing the users and directories that are frozen.
-  4-	'Unfreezing' specific users and directories.
+  'linfreeze -l' lists the 'frozen' users and directories
 
 COPYING
   LinFreeze is distributed under the GPL Version 3 or any higher version.

@@ -1,7 +1,6 @@
-.Dd October 26, 2010
+.Dd November 12, 2010
 .Os Linux
 .Dt LINFREEZE 1
-.
 .
 .Sh NAME
 .Nm LinFreeze
@@ -14,7 +13,9 @@
 .Op Fl d Ar directory
 .Op Fl f Ar user
 .Op Fl u
+.Op Fl s Ar user or directory
 .Op Fl c
+.Op Fl l
 .
 .Sh OPTIONS
 .Fl h
@@ -29,6 +30,8 @@
 .D1 So Un-freeze Sc all accounts and directories.
 .Fl c
 .D1 Removes all temporary directories used for freezing.
+.Fl l
+.D1 Lists the So frozen Sc users and directories on a system.
 .
 .Sh DESCRIPTION
 .Nm LinFreeze
@@ -62,7 +65,7 @@ and a list of static directories, if any, is included in
 .Pp
 The argument
 .Op Fl u
-is used to un-freeze directories by replacing
+is used to un-freeze directories and users by replacing
 .Pa /etc/fstab
 with
 .Pa /etc/fstab.thaw.
@@ -70,7 +73,19 @@ After it successfully completes, a message to reboot and use the
 .Op Fl c
 argument is shown.
 .Op Fl c
-removes the dynamic and, if applicable, static directories after they have been unloaded from rebooting.
+removes the dynamic and, if applicable, static directories after they have been unloaded from rebooting. The
+.Op s
+argument, followed by a
+.So frozen .Sc
+user or directory,
+.So unfreezes .Sc
+a specific user or directory that is frozen.
+.Pp
+Also, the
+.Op Fl l
+argument can be used to list the users and directories that are
+.So frozen Sc
+if the list exists.
 .
 .Sh IMPLEMENTATION NOTES
 Dependencies:
@@ -99,9 +114,17 @@ accesses and creates:
 .It
 .Pa /etc/fstab
 .It
-.Pa /etc/.frozen
+.Pa /etc/fstab.thaw
+.It
+.Pa /etc/.frozdirs
+.It
+.Pa /etc/.dynamic
 .It
 .Pa /etc/.static
+.It
+.Pa /etc/.spec-dy
+.It
+.Pa /etc/.spec-stat
 .
 .Sh AUTHOR
 .An Ryan Peters Aq sloshy45 AT sbgclobal DOT net

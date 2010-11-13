@@ -1,3 +1,10 @@
+==2010-11-12==v0.9 (1.0 RC)
+
+  * 'l' argument added to list the frozen users and directories, if applicable.
+  * 's' argument added to unfreeze a specific user or directory.
+  * Fixed a bug where it would still think you rebooted after you unfroze some directories.
+  * Massive code cleanup.
+
 ==2010-10-27==v0.5.2
 
   * The 'freeze directory' (-d) function now lets you change the owner of temporary directories.
