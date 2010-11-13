@@ -31,7 +31,7 @@
 # Constants
 PROGNAME=linfreeze
 NAMEPROPER=LinFreeze
-VERSION=0.9
+VERSION=0.9.1
 FROZNAME="/etc/.dynamic"	# File listing the dynamic folders for frozen dirs.
 STATNAME="/etc/.static"		# File listing the static folders for frozen users/dirs.
 LISTNAME="/etc/.frozdirs"	# File listing the frozen users/dirs.
@@ -190,7 +190,7 @@ if [ ! -d /home/$OPTARG.dynamic ];
 		echo "Exiting..."
 		exit 1
 fi
-if [ ! -d /home/$OPTARG.static ];
+if [ ! -d "/home/$OPTARG.static" -a "$STATNO" = "Y" ];
 	then
 		echo -n "Would you like to create a directory for temporary, read-only files to be layed over the user directory? [Y/n]: "
 		read STATIC
@@ -246,6 +246,7 @@ if [ "$STATYES" = "Y" -o "$STATYES" = "y" ];
 	then
 		mkdir /home/$OPTARG.static
 		chown  $OPTARG /home/$OPTARG.static
+		STATNO=Y
 fi
 echo /home/$OPTARG >> $LISTNAME
 echo "Preparations complete!"
@@ -254,7 +255,7 @@ echo ""
 
 unfreeze() { # This unfreezes all user accounts and directories that are frozen.
 ifroot
-if [ "$LINREBOOT" = "N" ];
+if [ -f /tmp/.linreboot ];
 	then
 		echo "There are users and/or directories waiting to be un-frozen."
 		echo "Please reboot this computer and execute $PROGNAME -c"
@@ -288,7 +289,7 @@ echo ""
 echo "If you put any files in a 'static' directory, you may wish to move them elsewhere now."
 echo ""
 echo "To remove the 'static' directories, if any, use $PROGNAME -c [user or directory] after rebooting."
-export LINREBOOT=N
+touch /tmp/.linreboot
 if [ -f $LISTNAME ];
 	then
 		rm $LISTNAME
@@ -318,7 +319,7 @@ if [ -d /home/$SPEC.dynamic ];
 	then
 		sed -i '\:/home/'$SPEC': d' /etc/fstab
 		echo "/home/$SPEC.dynamic" >> $SPECDNAME
-		export LINREBOOT=N
+		touch /tmp/.linreboot
 		echo "User $SPEC has been 'unfrozen'."
 		echo "First reboot your computer for the temporary 'dynamic' directories to be safely unmounted."
 		echo ""
@@ -326,7 +327,7 @@ if [ -d /home/$SPEC.dynamic ];
 fi
 if [ -d /home/$SPEC.static ];
 	then
-		export LINREBOOT=N
+		touch /tmp/.linreboot
 		echo "/home/$SPEC.static" >> $SPECSNAME
 		echo ""
 		echo "If you put any files in a 'static' directory, you may wish to move them elsewhere now."
@@ -337,7 +338,7 @@ if [ -d $SPEC.dynamic ];
 	then
 		sed -i '\:'$SPEC': d' /etc/fstab
 		echo "$SPEC.dynamic" >> $SPECDNAME
-		export LINREBOOT=N
+		touch /tmp/.linreboot
 		echo ""
 		echo "Directory $SPEC has been 'unfrozen'."
 		echo "First reboot your computer for the temporary 'dynamic' directories to be safely unmounted."
@@ -347,7 +348,7 @@ if [ -d $SPEC.dynamic ];
 fi
 if [ -d $SPEC.static ];
 	then
-		export LINREBOOT=N
+		touch /tmp/.linreboot
 		echo "$SPEC.static" >> $SPECSNAME
 		echo ""
 		echo "If you put any files in a 'static' directory, you may wish to move them elsewhere now."
@@ -364,7 +365,7 @@ fi
 clean() { # Removes dynamic and static directories for unfrozen users and directories.
 ifroot
 checkfiles
-if [ "$LINREBOOT" = "N" ];
+if [ -f /tmp/.linreboot ];
 	then
 		echo "This system needs to be rebooted before this function can be used."
 		exit 1

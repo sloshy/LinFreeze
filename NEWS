@@ -1,3 +1,8 @@
+==2010-11-13==v0.9.1 (1.0 RC2)
+
+  * /REALLY/ fixed the reboot bug (mentioned in the last update) this time. It now makes a file in /tmp that is checked for when you try to remove temporary directories. If it is found, then it tells you that you need to reboot and exit.
+  * Fixed a bug where it would ask you to make a 'static' folder twice.
+
 ==2010-11-12==v0.9 (1.0 RC)
 
   * 'l' argument added to list the frozen users and directories, if applicable.
