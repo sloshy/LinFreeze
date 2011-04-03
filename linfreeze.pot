@@ -1,0 +1,285 @@
+#: linfreeze:44
+msgid "$NAMEPROPER $VERSION -- Utility to prevent permanent file changes."
+msgstr ""
+#: linfreeze:46
+msgid "WARNING: While in use, this program makes changes to /etc/fstab."
+msgstr ""
+#: linfreeze:47
+msgid "Do not edit these files while a system is frozen, only before and after."
+msgstr ""
+#: linfreeze:49
+msgid "Usage:"
+msgstr ""
+#: linfreeze:50
+msgid "$PROGNAME [option] [directory or user to freeze or unfreeze]"
+msgstr ""
+#: linfreeze:52
+msgid "Options:"
+msgstr ""
+#: linfreeze:53
+msgid "-h	Display this help message and exit."
+msgstr ""
+#: linfreeze:54
+msgid "-v	Display version information and exit."
+msgstr ""
+#: linfreeze:56
+msgid "-d	Freeze a directory to prevent permanent file changes."
+msgstr ""
+#: linfreeze:57
+msgid "-f	Freeze a user account to prevent permanent file changes."
+msgstr ""
+#: linfreeze:58
+msgid "-u	Unfreeze all directories and users."
+msgstr ""
+#: linfreeze:59
+msgid "-s	Unfreeze a specific user or directory."
+msgstr ""
+#: linfreeze:60
+msgid "-c	Remove the temporary directories for user accounts and/or directories."
+msgstr ""
+#: linfreeze:61
+msgid "-l	Lists the frozen users and directories."
+msgstr ""
+#: linfreeze:67
+msgid "You must be the 'root' user to use this utility."
+msgstr ""
+#: linfreeze:86
+msgid "Directory $DIRF does not exist!"
+msgstr ""
+#: linfreeze:87
+msgid "Please enter an existing directory or create it with 'mkdir $DIRF'."
+msgstr ""
+#: linfreeze:92
+msgid "This directory is already frozen! Unfreeze it with $PROGNAME -u."
+msgstr ""
+#: linfreeze:93
+msgid "If $DIRF is not frozen, use $PROGNAME -c to remove the temporary directory."
+msgstr ""
+#: linfreeze:106
+msgid "$DIRF.dynamic"
+msgstr ""
+#: linfreeze:107
+msgid "Making dynamic directory at $OPTARG.dynamic for temporary files..."
+msgstr ""
+#: linfreeze:112
+msgid "Would you like to create a directory for read-only files to be laid"
+msgstr ""
+#: linfreeze:113
+msgid "over the original directory at $DIRF.static? [Y/n]: "
+msgstr ""
+#: linfreeze:122
+msgid "Folder $DIRF is now frozen. Reboot your computer to not make any changes."
+msgstr ""
+#: linfreeze:124
+msgid "If you wish to put temporary files and/or folders in the 'static' directory, please do so now by putting them in $DIRF.static."
+msgstr ""
+#: linfreeze:133
+msgid "Folder $DIRF is now frozen. Reboot your computer to not make any permanent changes."
+msgstr ""
+#: linfreeze:135
+msgid "If you wish to put temporary files and/or folders in the static directory, please do so now by putting them in $DIRF.static."
+msgstr ""
+#: linfreeze:137
+msgid "If you would like to 'freeze' other directories or users, you may do so."
+msgstr ""
+#: linfreeze:141
+msgid "Folder $DIRF is now 'frozen'. Reboot your computer to not make any permanent changes."
+msgstr ""
+#: linfreeze:143
+msgid "If you would like to 'freeze' other directories or users, you may do so."
+msgstr ""
+#: linfreeze:152
+msgid "Directory permissions changed successfully."
+msgstr ""
+#: linfreeze:155
+msgid "Use 'chown [user] $DIRF.dynamic' and 'chown [user] $DIRF.static' to set permissions."
+msgstr ""
+#: linfreeze:156
+msgid "Exiting..."
+msgstr ""
+#: linfreeze:162
+msgid "Would you like to set the ownership of the temporary directories used for 'freezing'?"
+msgstr ""
+#: linfreeze:163
+msgid "This is necessary if the directory frozen was inside of a home directory. [Y/n]: "
+msgstr ""
+#: linfreeze:168
+msgid "Which user would you like to own the temporary directories?"
+msgstr ""
+#: linfreeze:172
+msgid "Exiting..."
+msgstr ""
+#: linfreeze:181
+msgid "User account $OPTARG does not exist! Create it first."
+msgstr ""
+#: linfreeze:188
+msgid "User account $OPTARG is already frozen!"
+msgstr ""
+#: linfreeze:189
+msgid "Exiting..."
+msgstr ""
+#: linfreeze:194
+msgid "Would you like to create a directory for read-only files to be laid"
+msgstr ""
+#: linfreeze:195
+msgid "over the original user directory at /home/$OPTARG.static? [Y/n]: "
+msgstr ""
+#: linfreeze:211
+msgid "User account $OPTARG is now 'frozen'. Reboot this computer and log in as $OPTARG to not make any permanent changes."
+msgstr ""
+#: linfreeze:213
+msgid "If you wish to put temporary files and/or folders in the static directory, do so now by putting them in /home/$OPTARG.static."
+msgstr ""
+#: linfreeze:215
+msgid "If you would like to 'freeze' other directories or users, you may do so."
+msgstr ""
+#: linfreeze:218
+msgid "User account $OPTARG is now 'frozen'. Reboot this computer and log in as $OPTARG to not make any permanent changes."
+msgstr ""
+#: linfreeze:220
+msgid "If you would like to 'freeze' other directories or users, you may do so."
+msgstr ""
+#: linfreeze:228
+msgid "Making dynamic directory at /home/$OPTARG.dynamic for temporary files..."
+msgstr ""
+#: linfreeze:235
+msgid "Would you like to create a directory for read-only files"
+msgstr ""
+#: linfreeze:236
+msgid "to be laid over the user directory at /home/$OPTARG.static? [Y/n]: "
+msgstr ""
+#: linfreeze:240
+msgid "Static directory already created. Continuing..."
+msgstr ""
+#: linfreeze:250
+msgid "Preparations complete!"
+msgstr ""
+#: linfreeze:258
+msgid "There are users and/or directories waiting to be un-frozen."
+msgstr ""
+#: linfreeze:259
+msgid "Please reboot this computer and execute $PROGNAME -c"
+msgstr ""
+#: linfreeze:264
+msgid "Would you like to 'unfreeze' all user accounts and directories? [Y/n]: "
+msgstr ""
+#: linfreeze:268
+msgid "There are no 'frozen' users or directories."
+msgstr ""
+#: linfreeze:269
+msgid "Freeze them with $PROGNAME [-f user] [-d directory]."
+msgstr ""
+#: linfreeze:277
+msgid "Leaving system as-is."
+msgstr ""
+#: linfreeze:281
+msgid "All user accounts and/or directories have been 'unfrozen'."
+msgstr ""
+#: linfreeze:283
+msgid "First reboot your computer for the temporary 'dynamic' directories to be safely unmounted."
+msgstr ""
+#: linfreeze:285
+msgid "Then run $PROGNAME -c after rebooting to remove the temporary directories."
+msgstr ""
+#: linfreeze:287
+msgid "If you put any files in a 'static' directory, you may wish to move them elsewhere now."
+msgstr ""
+#: linfreeze:289
+msgid "To remove the 'static' directories, if any, use $PROGNAME -c [user or directory] after rebooting."
+msgstr ""
+#: linfreeze:302
+msgid "There are no users or directories 'frozen'. Exiting..."
+msgstr ""
+#: linfreeze:305
+msgid "Would you like to 'unfreeze' $SPEC? [Y/n]: "
+msgstr ""
+#: linfreeze:309
+msgid "Exiting..."
+msgstr ""
+#: linfreeze:321
+msgid "User $SPEC has been 'unfrozen'."
+msgstr ""
+#: linfreeze:322
+msgid "First reboot your computer for the temporary 'dynamic' directories to be safely unmounted."
+msgstr ""
+#: linfreeze:324
+msgid "Then run $PROGNAME -c after rebooting to remove the temporary directories."
+msgstr ""
+#: linfreeze:331
+msgid "If you put any files in a 'static' directory, you may wish to move them elsewhere now."
+msgstr ""
+#: linfreeze:333
+msgid "To remove the 'static' directory, use $PROGNAME -c after rebooting."
+msgstr ""
+#: linfreeze:341
+msgid "Directory $SPEC has been 'unfrozen'."
+msgstr ""
+#: linfreeze:342
+msgid "First reboot your computer for the temporary 'dynamic' directories to be safely unmounted."
+msgstr ""
+#: linfreeze:344
+msgid "Then run $PROGNAME -c after rebooting to remove the temporary directories."
+msgstr ""
+#: linfreeze:352
+msgid "If you put any files in a 'static' directory, you may wish to move them elsewhere now."
+msgstr ""
+#: linfreeze:354
+msgid "To remove the 'static' directory, use $PROGNAME -c after rebooting."
+msgstr ""
+#: linfreeze:358
+msgid "User or directory $SPEC is not frozen or does not exist. Exiting..."
+msgstr ""
+#: linfreeze:368
+msgid "This system needs to be rebooted before this function can be used."
+msgstr ""
+#: linfreeze:373
+msgid "Remove temporary directories for 'unfrozen' users/directories? [Y/n]: "
+msgstr ""
+#: linfreeze:383
+msgid "Removed $SPECDYNDIR"
+msgstr ""
+#: linfreeze:389
+msgid "Remove 'static directories for 'unfrozen' users/directories?"
+msgstr ""
+#: linfreeze:390
+msgid "If you have files in any static directories, move them elsewhere."
+msgstr ""
+#: linfreeze:401
+msgid "Removed $SPECSTATDIR"
+msgstr ""
+#: linfreeze:407
+msgid "Remove temporary directories for all users and folders? [Y/n]: "
+msgstr ""
+#: linfreeze:416
+msgid "'Dynamic' directories for users removed."
+msgstr ""
+#: linfreeze:425
+msgid "Removed $FROZDIR"
+msgstr ""
+#: linfreeze:431
+msgid "Remove 'static' directories for all users? [Y/n]: "
+msgstr ""
+#: linfreeze:440
+msgid "'Static' directories for users removed."
+msgstr ""
+#: linfreeze:445
+msgid "Remove 'static' directories for all directories? [Y/n]: "
+msgstr ""
+#: linfreeze:455
+msgid "Removed $STATDIR."
+msgstr ""
+#: linfreeze:467
+msgid "Cleanup complete!"
+msgstr ""
+#: linfreeze:473
+msgid "The following directories are 'frozen':"
+msgstr ""
+#: linfreeze:476
+msgid "There appear to be no 'frozen' directories or users on this system."
+msgstr ""
+#: linfreeze:477
+msgid "Exiting..."
+msgstr ""
+#: linfreeze:489
+msgid "$NAMEPROPER version $VERSION"
+msgstr ""

@@ -1,3 +1,8 @@
+==2011-04-02==v0.9.2 (1.0 RC3)
+
+  * Fixed an inconsequential bug where a message wasn't "echo'd" properly.
+  * Basic localization support. TRANSLATORS NEEDED!
+
 ==2010-11-13==v0.9.1 (1.0 RC2)
 
   * /REALLY/ fixed the reboot bug (mentioned in the last update) this time. It now makes a file in /tmp that is checked for when you try to remove temporary directories. If it is found, then it tells you that you need to reboot and exit.
