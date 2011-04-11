@@ -29,9 +29,11 @@
 #
 
 # Constants
+TEXTDOMAINDIR=/usr/local/share/locale
+TEXTDOMAIN=linfreeze
 PROGNAME=linfreeze
 NAMEPROPER=LinFreeze
-VERSION=0.9.3
+VERSION=0.9.4
 FROZNAME="/etc/.dynamic"	# File listing the dynamic folders for frozen dirs.
 STATNAME="/etc/.static"		# File listing the static folders for frozen users/dirs.
 LISTNAME="/etc/.frozdirs"	# File listing the frozen users/dirs.
@@ -140,7 +142,7 @@ if [ "$STATYES" = "Y" -o "$STATYES" = "y" ]
 		echo none $DIRF aufs br=$DIRF.dynamic=rw:$DIRF=ro 0 0 >> /etc/fstab
 		echo $"Folder $DIRF is now 'frozen'. Reboot your computer to not make any permanent changes."
 		echo ""
-		echo $"If you would like to 'freeze' other directories or users, you may do so."
+		echo "If you would like to 'freeze' other directories or users, you may do so."
 		echo ""
 fi
 chowndir
@@ -169,7 +171,7 @@ if [ "$CHOWNYES" = "Y" -o "$CHOWNYES" = "y" ];
 		read CHOWNUSER
 		echo ""
 	else
-		echo $"Exiting..."
+		echo "Exiting..."
 		exit 0
 fi
 }
@@ -186,12 +188,12 @@ if [ ! -d /home/$OPTARG.dynamic ];
 		prep;
 	else
 		echo $"User account $OPTARG is already frozen!"
-		echo $"Exiting..."
+		echo "Exiting..."
 		exit 1
 fi
 if [ ! -d "/home/$OPTARG.static" -a "$STATNO" = "Y" ];
 	then
-		echo $"Would you like to create a directory for read-only files to be laid"
+		echo "Would you like to create a directory for read-only files to be laid"
 		echo -n $"over the original user directory at /home/$OPTARG.static? [Y/n]: "
 		read STATIC
 		echo ""
@@ -210,14 +212,14 @@ if [ -d /home/$OPTARG.static ];
 		echo none /home/$OPTARG aufs br=/home/$OPTARG.dynamic=rw:/home/$OPTARG.static=ro:/home/$OPTARG=ro 0 0 >> /etc/fstab
 		echo $"User account $OPTARG is now 'frozen'. Reboot this computer and log in as $OPTARG to not make any permanent changes."
 		echo ""
-		echo $"If you wish to put temporary files and/or folders in the static directory, do so now by putting them in /home/$OPTARG.static."
+		echo "If you wish to put temporary files and/or folders in the static directory, do so now by putting them in /home/$OPTARG.static."
 		echo ""
 		echo $"If you would like to 'freeze' other directories or users, you may do so."
 	else
 		echo none /home/$OPTARG aufs br=/home/$OPTARG.dynamic=rw:/home/$OPTARG=ro 0 0 >> /etc/fstab
-		echo $"User account $OPTARG is now 'frozen'. Reboot this computer and log in as $OPTARG to not make any permanent changes."
+		echo "User account $OPTARG is now 'frozen'. Reboot this computer and log in as $OPTARG to not make any permanent changes."
 		echo ""
-		echo $"If you would like to 'freeze' other directories or users, you may do so."
+		echo "If you would like to 'freeze' other directories or users, you may do so."
 fi
 }
 
@@ -306,7 +308,7 @@ echo -n $"Would you like to 'unfreeze' $SPEC? [Y/n]: "
 read SPECYES
 if [ "$SPECYES" != "Y" -a "$SPECYES" != "y" ];
 	then
-		echo $"Exiting..."
+		echo "Exiting..."
 		exit 0
 fi
 if [ ! -f $SPECNAME ];
@@ -319,16 +321,16 @@ if [ -d /home/$SPEC.dynamic ];
 		echo "/home/$SPEC.dynamic" >> $SPECDNAME
 		touch /tmp/.linreboot
 		echo $"User $SPEC has been 'unfrozen'."
-		echo $"First reboot your computer for the temporary 'dynamic' directories to be safely unmounted."
+		echo "First reboot your computer for the temporary 'dynamic' directories to be safely unmounted."
 		echo ""
-		echo $"Then run $PROGNAME -c after rebooting to remove the temporary directories."
+		echo "Then run $PROGNAME -c after rebooting to remove the temporary directories."
 fi
 if [ -d /home/$SPEC.static ];
 	then
 		touch /tmp/.linreboot
 		echo "/home/$SPEC.static" >> $SPECSNAME
 		echo ""
-		echo $"If you put any files in a 'static' directory, you may wish to move them elsewhere now."
+		echo "If you put any files in a 'static' directory, you may wish to move them elsewhere now."
 		echo ""
 		echo $"To remove the 'static' directory, use $PROGNAME -c after rebooting."
 fi
@@ -339,9 +341,9 @@ if [ -d $SPEC.dynamic ];
 		touch /tmp/.linreboot
 		echo ""
 		echo $"Directory $SPEC has been 'unfrozen'."
-		echo $"First reboot your computer for the temporary 'dynamic' directories to be safely unmounted."
+		echo "First reboot your computer for the temporary 'dynamic' directories to be safely unmounted."
 		echo ""
-		echo $"Then run $PROGNAME -c after rebooting to remove the temporary directories."
+		echo "Then run $PROGNAME -c after rebooting to remove the temporary directories."
 		echo ""
 fi
 if [ -d $SPEC.static ];
@@ -349,9 +351,9 @@ if [ -d $SPEC.static ];
 		touch /tmp/.linreboot
 		echo "$SPEC.static" >> $SPECSNAME
 		echo ""
-		echo $"If you put any files in a 'static' directory, you may wish to move them elsewhere now."
+		echo "If you put any files in a 'static' directory, you may wish to move them elsewhere now."
 		echo ""
-		echo $"To remove the 'static' directory, use $PROGNAME -c after rebooting."
+		echo "To remove the 'static' directory, use $PROGNAME -c after rebooting."
 fi
 if [ ! -d "/home/$SPEC.dynamic" -a ! -d "$SPEC.dynamic" ];
 	then
@@ -474,7 +476,7 @@ if [ -f $LISTNAME ];
 		cat $LISTNAME
 	else
 		echo $"There appear to be no 'frozen' directories or users on this system."
-		echo $"Exiting..."
+		echo "Exiting..."
 		exit 1
 fi
 }
