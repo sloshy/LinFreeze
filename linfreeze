@@ -72,7 +72,7 @@ fi
 }
 
 checkcmdline() { #Checks if aufs=tmpfs parameter is up. If not, probably the system can't mount the dir/partition.
-if ! [ `cat /proc/cmdline | grep "aufs=tmpfs"`]
+if ! [ `cat /proc/cmdline | grep "aufs=tmpfs"` ];
 	then
 		echo $"Remember to set aufs=tmpfs on kernel parameters to AVOID PROBLEMS. Example: ... ro quiet splash aufs=tmpfs ..."
 fi
