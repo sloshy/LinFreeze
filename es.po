@@ -82,6 +82,10 @@ msgstr "-l\tListar los usuarios y directorios congelados."
 msgid "You must be the 'root' user to use this utility."
 msgstr "Es necesario ser usuario 'root' para utilizar este programa."
 
+#: linfreeze:75
+msgid "Remember to set aufs=tmpfs on kernel parameters to AVOID PROBLEMS. Example: ... ro quiet splash aufs=tmpfs ..."
+msgstr "Recuerda setear el aufs=tmpfs en los parametros del kernel para EVITAR PROBLEMAS. Ejemplo: ... ro quiet splash aufs=tmpfs ...""
+
 #: linfreeze:86
 msgid "Directory $DIRF does not exist!"
 msgstr "El directorio $DIRF no existe."

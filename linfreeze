@@ -71,6 +71,13 @@ if [ "$(whoami)" != "root" ];
 fi
 }
 
+checkcmdline() { #Checks if aufs=tmpfs parameter is up. If not, probably the system can't mount the dir/partition.
+if ! [ `cat /proc/cmdline | grep "aufs=tmpfs"`]
+	then
+		echo $"Remember to set aufs=tmpfs on kernel parameters to AVOID PROBLEMS. Example: ... ro quiet splash aufs=tmpfs ..."
+fi
+}
+
 checkfiles() { # Checks if /etc/.frozen exists and renames it to /etc/.dynamic.
 ifroot
 if [ -f /etc/.frozen ];
@@ -157,6 +164,7 @@ if [ -d /home/$CHOWNUSER ];
 		echo $"Use 'chown [user] $DIRF.dynamic' and 'chown [user] $DIRF.static' to set permissions."
 		echo $"Exiting..."
 fi
+checkcmdline
 }
 
 chowndir() { # Changes ownership of temporary directories
@@ -221,6 +229,7 @@ if [ -d /home/$OPTARG.static ];
 		echo ""
 		echo "If you would like to 'freeze' other directories or users, you may do so."
 fi
+checkcmdline
 }
 
 prep() { # This prepares a user account for freezing.
@@ -294,6 +303,7 @@ if [ -f $LISTNAME ];
 	then
 		rm $LISTNAME
 fi
+checkcmdline
 }
 
 specific() { # Unfreezes a specific user or directory
