@@ -303,7 +303,6 @@ if [ -f $LISTNAME ];
 	then
 		rm $LISTNAME
 fi
-checkcmdline
 }
 
 specific() { # Unfreezes a specific user or directory
