@@ -1,11 +1,11 @@
 LinFreeze 0.9.4
 
-WARNING: THIS SCRIPT CAN EAT YOUR BABIES IF MISUSED! BE VERY CAREFUL OR IT MAY MESS UP YOUR SYSTEM! I TAKE NO RESPONSABILITY FOR ANY DAMAGE CAUSED, AND THERE IS NO WARRANTY.
+NOTE: This script is outdated and may not work on modern versions of Linux. Use at your own risk.
 
-HELP WANTED: I need localization help! Google Translate won't cut it for me. I have a basic .pot file ready, all you have to do is translate it. Keep the variables intact please!
+LOCALIZATION: I have a basic .pot file ready, so if you know another language you can use that to help. Keep the variables intact please!
 
 AUTHORS
-  Ryan Peters <sloshy45 [--at--] sbcglobal [--dot--] net>
+  Ryan Peters <peter232 [--at--] purduecal [--dot--] edu>
   Spanish (es) translation: http://identi.ca/larusalka
 
 DESCRIPTION
@@ -25,7 +25,7 @@ INSTALL
   2. Compress "linfreeze.1", the man page, with gzip.
   3. Copy "linfreeze.1.gz" to /usr/share/man/man1.
 
-PACKAGES
+PACKAGES [DISCONTINUED]
   Arch Linux: http://aur.archlinux.org/packages.php?ID=41504
 
 INSTRUCTIONS
