@@ -43,6 +43,9 @@ msgstr ""
 #: linfreeze:67
 msgid "You must be the 'root' user to use this utility."
 msgstr ""
+#: linfreeze:75
+msgid "Remember to set aufs=tmpfs on kernel parameters to AVOID PROBLEMS. Example: ... ro quiet splash aufs=tmpfs ..."
+msgstr ""
 #: linfreeze:86
 msgid "Directory $DIRF does not exist!"
 msgstr ""
